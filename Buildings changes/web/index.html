@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Zastavanosť Bratislavy v čase</title>
+		<meta charset="utf-8" />
+		<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+		<link rel="stylesheet" type="text/css" href="css/own_style.css">
+		<link rel="stylesheet" href="css/label.css" />
+		<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+		<script src="js/leaflet-hash.js"></script>
+		<script src="js/label.js"></script>
+		<script src="js/Autolinker.min.js"></script>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	</head>
+	<body>
+		<div id="map"></div>
+		<input id="slide" type="range" min="0" max="1" step="0.1" value="1" onchange="updateOpacity(this.value)">
+		<script>
+		var map = L.map('map', {
+			zoomControl:true, maxZoom:19
+		}).fitBounds([[48.1372585691,17.0822639465],[48.1657352053,17.1443481445]]);
+		var hash = new L.Hash(map);
+		var additional_attrib = 'created w. <a href="https://github.com/geolicious/qgis2leaf" target ="_blank">qgis2leaf</a> by <a href="http://www.geolicious.de" target ="_blank">Geolicious</a> & contributors<br>';
+		var feature_group = new L.featureGroup([]);
+		var raster_group = new L.LayerGroup([]);
+		var basemap_0 = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { 
+			attribution: additional_attrib + '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors,<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+		});	
+		basemap_0.addTo(map);	
+		var layerOrder=new Array();
+var overlay_budovy1765 = L.tileLayer.wms('http://195.210.29.101:8080/geoserver/optivia/wms?', {
+			layers: 'budovy_1765',
+			format: 'image/png',
+			transparent: true,
+			continuousWorld : true,
+		}).addTo(map);
+		var overlay_budovy1820 = L.tileLayer.wms('http://195.210.29.101:8080/geoserver/optivia/wms?', {
+			layers: 'budovy_1820',
+			format: 'image/png',
+			transparent: true,
+			continuousWorld : true,
+		}).addTo(map);
+		var overlay_budovy1945 = L.tileLayer.wms('http://195.210.29.101:8080/geoserver/optivia/wms?', {
+			layers: 'budovy_1945',
+			format: 'image/png',
+			transparent: true,
+			continuousWorld : true,
+		}).addTo(map);
+		var overlay_budovyzbgis = L.tileLayer.wms('http://195.210.29.101:8080/geoserver/optivia/wms?', {
+			layers: 'budovy_zbgis',
+			format: 'image/png',
+			transparent: true,
+			continuousWorld : true,
+		}).addTo(map);
+
+
+		
+
+		feature_group.addTo(map);
+		var legend = L.control({position: 'bottomright'});
+		legend.onAdd = function (map) {
+			var div = L.DomUtil.create('div', 'info legend');
+			div.innerHTML = "<h3>Legenda</h3><img src=\"legenda.png\" alt=\"Legenda\" height=\"100\" width=\"100\"> ";
+    		return div;
+		};
+		legend.addTo(map);
+	var baseMaps = {
+		'OSM Standard': basemap_0,
+	};
+		L.control.layers(baseMaps,{"Budovy zo ZBGIS": overlay_budovyzbgis,"Budovy v roku 1945": overlay_budovy1945,"Budovy v roku 1820": overlay_budovy1820,"Budovy v roku 1765": overlay_budovy1765},{collapsed:false}).addTo(map);
+		function updateOpacity(value) {
+		
+							overlay_budovy1765.setOpacity(value);
+							overlay_budovy1820.setOpacity(value);
+							overlay_budovy1945.setOpacity(value);
+							overlay_budovyzbgis.setOpacity(value)}
+		L.control.scale({options: {position: 'bottomleft',maxWidth: 100,metric: true,imperial: false,updateWhenIdle: false}}).addTo(map);
+	</script>
+</body>
+</html>
